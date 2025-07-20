@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Distance Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+    nav {
+      width: 200px;
+      background: #333;
+      color: white;
+      padding: 1em;
+    }
+    nav h3 {
+      color: #fff;
+      margin-top: 0;
+    }
+    nav a {
+      color: #ccc;
+      display: block;
+      margin: 0.5em 0;
+      text-decoration: none;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    main {
+      flex: 1;
+      padding: 2em;
+      background: #f9f9f9;
+      overflow-y: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    .point-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.9em;
+      flex: 1;
+    }
+    input {
+      padding: 5px;
+      font-size: 1em;
+    }
+    button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      margin: 1em 0;
+      display: block;
+      width: 100%;
+    }
+    .result {
+      background: #eee;
+      padding: 1em;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h3>Tools</h3>
+    <a href="index.html">🏠 Home</a>
+    <a href="distance.html">📏 Distance Calculator</a>
+    <a href="#">🗺️ 2D Map (soon)</a>
+  </nav>
+  <main>
+    <h2>Coordinate Distance Calculator</h2>
+    <div id="points">
+      <div class="point-group">
+        <label>A X<input type="number" id="Ax" /></label>
+        <label>A Y<input type="number" id="Ay" /></label>
+        <label>A Z<input type="number" id="Az" /></label>
+      </div>
+      <div class="point-group">
+        <label>B X<input type="number" id="Bx" /></label>
+        <label>B Y<input type="number" id="By" /></label>
+        <label>B Z<input type="number" id="Bz" /></label>
+      </div>
+      <div class="point-group">
+        <label>C X<input type="number" id="Cx" /></label>
+        <label>C Y<input type="number" id="Cy" /></label>
+        <label>C Z<input type="number" id="Cz" /></label>
+      </div>
+      <div class="point-group">
+        <label>D X<input type="number" id="Dx" /></label>
+        <label>D Y<input type="number" id="Dy" /></label>
+        <label>D Z<input type="number" id="Dz" /></label>
+      </div>
+    </div>
+    <button onclick="calculate()">Calculate Distance</button>
+    <div class="result" id="output"></div>
+  </main>
+  <script>
+    function calculate() {
+      const names = ['A', 'B', 'C', 'D'];
+      const points = [];
+
+      for (let name of names) {
+        const x = document.getElementById(name + 'x').value;
+        const y = document.getElementById(name + 'y').value;
+        const z = document.getElementById(name + 'z').value;
+        if (x && z) {
+          points.push({
+            name,
+            x: parseFloat(x),
+            y: y ? parseFloat(y) : null,
+            z: parseFloat(z)
+          });
+        }
+      }
+
+      if (points.length < 2) {
+        document.getElementById("output").textContent = "Please enter at least 2 coordinate points (X and Z required).";
+        return;
+      }
+
+      let result = "";
+      let total = 0;
+
+      for (let i = 0; i < points.length; i++) {
+        const a = points[i];
+        const b = points[(i + 1) % points.length];
+        const dx = b.x - a.x;
+        const dz = b.z - a.z;
+        const dy = (a.y !== null && b.y !== null) ? (b.y - a.y) : 0;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        result += `${a.name} → ${b.name}: ${dist.toFixed(2)} blocks\n`;
+        total += dist;
+      }
+
+      result += `\nTotal distance: ${total.toFixed(2)} blocks`;
+      document.getElementById("output").textContent = result;
+    }
+  </script>
+</body>
+</html>
